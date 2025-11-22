@@ -1,2 +1,16 @@
-const connectionString =
-  "mongodb+srv://mahmoud:<db_password>@nodeexpressprojects.tb9iiad.mongodb.net/?appName=NodeExpressProjects";
+const mongoose = require("mongoose");
+
+const connectionString = `${process.env.MONGO_URI}`;
+const connectDB = () => { 
+    // returns a promise
+    return mongoose
+      .connect(connectionString)
+    //   .then(() => {
+    //     console.log(`Connected To The DB...`);
+    //   })
+    //   .catch((err) => {
+    //     console.log(`err -> `, err);
+    //   });
+}
+
+module.exports = connectDB

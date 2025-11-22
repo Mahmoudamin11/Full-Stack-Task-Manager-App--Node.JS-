@@ -1,3 +1,5 @@
+require("dotenv").config()
+const connectDB = require('./db/connect')
 const express = require("express");
 const tasksRouter = require("./routes/tasks");
 const app = express();
@@ -9,4 +11,14 @@ app.use(express.json()); // to conver the req.body from raw JSON (Undifiend for 
 app.use("/api/v1/tasks", tasksRouter);
 
 const port = 3000;
-app.listen(port, console.log(`Server is listening on port ${port}...`));
+
+const start = async () => { 
+    try {
+        await connectDB();
+        app.listen(port, console.log(`Server is listening on port ${port}...`));
+    } catch (error) {
+        console.log(error);
+    }
+}
+
+start()
