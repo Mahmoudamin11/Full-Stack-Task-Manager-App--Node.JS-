@@ -6,6 +6,7 @@ const app = express();
 
 // Middleware
 app.use(express.json()); // to conver the req.body from raw JSON (Undifiend for Express) -> Object
+app.use(express.static('./public')); // to conver the req.body from raw JSON (Undifiend for Express) -> Object
 
 //        root route       Router
 app.use("/api/v1/tasks", tasksRouter);

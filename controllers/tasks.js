@@ -1,28 +1,72 @@
-const getAllTasks = (req, res) => {
-    res.send(`All Tasks`)
-}
+const Task = require("../models/tasks");
 
-const createTask = (req, res) => {
-    res.json(req.body)
-}
+const getAllTasks = async (req, res) => {
+  try {
+    const tasks = await Task.find({});
+    res.status(200).json({ tasks });
+  } catch (error) {
+    res.status(500).json({ msg: error });
+  }
+};
 
-const getTask = (req, res) => {
-    res.json({id: req.params.id})
-}
+const createTask = async (req, res) => {
+  try {
+    const task = await Task.create(req.body);
+    res.status(201).json(task);
+  } catch (error) {
+    res.status(500).json({ error: error });
+  }
+};
 
-const updateTask = (req, res) => {
-    res.send(`Update Task, id : ${req.params.id}`)
-}
+const getTask = async (req, res) => {
+  const { id } = req.params;
+  try {
+    const task = await Task.findOne({ _id: id });
+    if (!task) {
+      return res.status(404).json({ msg: `No Task With That ID : ${id}` });
+    }
+    res.status(200).json({ task });
+  } catch (error) {
+    res.status(500).json({ error: error });
+  }
+};
 
-const deleteTask = (req, res) => {
-    const {id} = req.params
-    res.send(`Delete Task, id: ${id}`)
-}
+const deleteTask = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const task = await Task.findOneAndDelete({ _id: id });
+    if (!task) {
+      return res.status(404).json({ msg: `No Task With That ID : ${id}` });
+    }
+    res
+      .status(200)
+      .json({ task, msg: `Task '${task.name}' was deleted successfully..` });
+  } catch (error) {
+    res.status(500).json({ error: error });
+  }
+};
+
+const updateTask = async (req, res) => {
+  try {
+    const { id: taskID } = req.params;
+    const task = await Task.findOneAndUpdate({ _id: taskID }, req.body, {
+      new: true,
+      runValidators: true,
+    });
+
+    if (!task) {
+      return res.status(404).json({ msg: `No Task With this ID : ${taskID}` });
+    }
+    res.status(200).json({ task });
+  } catch (error) {
+    res.status(500).json({ error: error });
+  }
+};
 
 module.exports = {
-    getAllTasks,
-    createTask,
-    getTask,
-    updateTask,
-    deleteTask
-}
+  getAllTasks,
+  createTask,
+  getTask,
+  updateTask,
+  deleteTask,
+};
